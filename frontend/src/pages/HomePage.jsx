@@ -74,13 +74,13 @@ const HomePage = () => {
       // Optimistically update the local state buffer
       const activeBufferIndex = taskBuffer.findIndex((task) => task._id === active.id);
       const overBufferIndex = taskBuffer.findIndex((task) => task._id === over.id);
-      
+
       const updatedBuffer = arrayMove(taskBuffer, activeBufferIndex, overBufferIndex);
       setTaskBuffer(updatedBuffer);
 
       // Prepare API payload for all tasks in the buffer to preserve order
       const tasksToUpdate = updatedBuffer.map((t, i) => ({ _id: t._id, order: i }));
-      
+
       try {
         await api.put('/tasks/reorder', { tasks: tasksToUpdate });
       } catch (error) {
@@ -114,17 +114,18 @@ const HomePage = () => {
   const totalPages = Math.ceil(filteredTasks.length / visibleTaskLimit);
 
   return (
-    <div className="min-h-screen w-full bg-[#fefcff] relative">
-      {/* Dreamy Sky Pink Glow */}
+    <div className="min-h-screen w-full bg-[#fefcff] relative overflow-hidden">
+      {/* Morning Haze */}
       <div
         className="absolute inset-0 z-0"
         style={{
           backgroundImage: `
-        radial-gradient(circle at 30% 70%, rgba(173, 216, 230, 0.35), transparent 60%),
-        radial-gradient(circle at 70% 30%, rgba(255, 182, 193, 0.4), transparent 60%)`,
+          radial-gradient(circle at 50% 100%, rgba(253, 224, 71, 0.4) 0%, transparent 60%),
+          radial-gradient(circle at 50% 100%, rgba(251, 191, 36, 0.4) 0%, transparent 70%),
+          radial-gradient(circle at 50% 100%, rgba(244, 114, 182, 0.5) 0%, transparent 80%)
+        `,
         }}
       />
-      {/* Your Content/Components */}
       <div className="container relative z-10 pt-8 mx-auto">
         <div className="w-full max-w-2xl p-6 mx-auto space-y-6">
           {/* Đầu Trang */}
