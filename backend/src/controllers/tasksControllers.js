@@ -23,7 +23,7 @@ export const getAllTasks = async (req, res) => {
             }
         }
 
-        const tasks = await Task.find(query).sort({ createdAt: -1 });    // lay tat ca data tu database // -1 = descending order, 1 = ascending order
+        const tasks = await Task.find(query).sort({ order: 1, createdAt: -1 });    // lay tat ca data tu database
         
         const activeCount = tasks.filter(task => task.status === 'active').length;
         const completeCount = tasks.filter(task => task.status === 'completed').length;
@@ -43,7 +43,11 @@ export const getAllTasks = async (req, res) => {
 export const createTask = async (req, res) => {
     try {
         const { title } = req.body;
-        const task = new Task({ title });
+        
+        const highestTask = await Task.findOne().sort('-order');
+        const order = highestTask ? highestTask.order + 1 : 0;
+
+        const task = new Task({ title, order });
 
         const newTask = await task.save();
         res.status(201).json(newTask);
@@ -84,6 +88,31 @@ export const deleteTask = async (req, res) => {
         res.status(200).json(deletedTask  );
     } catch (error) {
         console.error('Error when calling deleteTask:', error);
+        res.status(500).json({ message: 'System Error' });
+    }
+};
+
+export const reorderTasks = async (req, res) => {
+    try {
+        const { tasks } = req.body; // Array of { _id, order }
+        
+        if (!tasks || !Array.isArray(tasks)) {
+            return res.status(400).json({ message: 'Invalid payload' });
+        }
+
+        // Bulk update
+        const bulkOps = tasks.map(t => ({
+            updateOne: {
+                filter: { _id: t._id },
+                update: { order: t.order }
+            }
+        }));
+
+        await Task.bulkWrite(bulkOps);
+
+        res.status(200).json({ message: 'Tasks reordered successfully' });
+    } catch (error) {
+        console.error('Error when calling reorderTasks:', error);
         res.status(500).json({ message: 'System Error' });
     }
 };

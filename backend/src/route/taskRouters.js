@@ -3,7 +3,8 @@ import {
     createTask, 
     deleteTask, 
     getAllTasks, 
-    updateTask 
+    updateTask,
+    reorderTasks
 } 
 from '../controllers/tasksControllers.js';
 
@@ -12,6 +13,8 @@ const router = express.Router();
 router.get('/', getAllTasks);
 
 router.post('/', createTask);
+
+router.put('/reorder', reorderTasks);
 
 router.put('/:id', updateTask);
 

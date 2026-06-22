@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import api from "@/lib/axios";
 import { visibleTaskLimit } from "@/lib/data";
 import { Loader2 } from "lucide-react";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 
 const HomePage = () => {
   const [taskBuffer, setTaskBuffer] = useState([]);
@@ -62,6 +64,30 @@ const HomePage = () => {
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
+  };
+
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      // Optimistically update the local state buffer
+      const activeBufferIndex = taskBuffer.findIndex((task) => task._id === active.id);
+      const overBufferIndex = taskBuffer.findIndex((task) => task._id === over.id);
+      
+      const updatedBuffer = arrayMove(taskBuffer, activeBufferIndex, overBufferIndex);
+      setTaskBuffer(updatedBuffer);
+
+      // Prepare API payload for all tasks in the buffer to preserve order
+      const tasksToUpdate = updatedBuffer.map((t, i) => ({ _id: t._id, order: i }));
+      
+      try {
+        await api.put('/tasks/reorder', { tasks: tasksToUpdate });
+      } catch (error) {
+        console.error("Error reordering:", error);
+        toast.error("Cannot save the new order.");
+      }
+    }
   };
 
   // biến
@@ -121,11 +147,13 @@ const HomePage = () => {
               <Loader2 className="size-8 animate-spin text-primary" />
             </div>
           ) : (
-            <TaskList
-              filteredTasks={visibleTasks}
-              filter={filter}
-              handleTaskChanged={handleTaskChanged}
-            />
+            <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <TaskList
+                filteredTasks={visibleTasks}
+                filter={filter}
+                handleTaskChanged={handleTaskChanged}
+              />
+            </DndContext>
           )}
 
           {/* Phân Trang và Lọc Theo Date */}

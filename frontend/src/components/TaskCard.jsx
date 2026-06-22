@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { Card } from "./ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { Calendar, CheckCircle2, Circle, SquarePen, Trash2 } from "lucide-react";
+import { Calendar, CheckCircle2, Circle, SquarePen, Trash2, GripVertical } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Input } from "./ui/input";
 import api from "@/lib/axios";
 import { toast } from "sonner";
@@ -10,6 +12,19 @@ import { toast } from "sonner";
 const TaskCard = ({ task, index, handleTaskChanged }) => {
   const [isEditting, setIsEditting] = useState(false);
   const [updateTaskTitle, setUpdateTaskTitle] = useState(task.title || "");
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: task._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const deleteTask = async (taskId) => {
     try {
@@ -68,13 +83,19 @@ const TaskCard = ({ task, index, handleTaskChanged }) => {
 
   return (
     <Card
+      ref={setNodeRef}
+      style={{ ...style, animationDelay: `${index * 50}ms` }}
       className={cn(
-        "p-4 rounded-2xl bg-gradient-card border-0 shadow-custom-md hover:shadow-custom-lg transition-all duration-200 animate-fade-in group",
+        "p-4 rounded-2xl bg-gradient-card border-0 shadow-custom-md hover:shadow-custom-lg transition-all duration-300 animate-in fade-in group",
         task.status === "complete" && "opacity-75"
       )}
-      style={{ animationDelay: `${index * 50}ms` }}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        {/* drag handle */}
+        <div {...attributes} {...listeners} className="cursor-grab text-muted-foreground/30 hover:text-foreground touch-none">
+          <GripVertical className="size-5" />
+        </div>
+
         {/* nút tròn */}
         <Button
           variant="ghost"
