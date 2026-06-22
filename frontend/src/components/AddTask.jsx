@@ -47,8 +47,8 @@ const AddTask = ({ handleNewTaskAdded }) => {
           onClick={handleAdd}
           disabled={!title.trim()}
         >
-        <Plus className="size-6" />
-          Thêm
+          <Plus className="size-6" />
+          Add
         </Button>
       </div>
     </Card>

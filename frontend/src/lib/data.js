@@ -7,19 +7,19 @@ export const FilterType = {
 export const options = [
   {
     value: "today",
-    label: "Hôm nay",
+    label: "Today",
   },
   {
     value: "week",
-    label: "Tuần này",
+    label: "This week",
   },
   {
     value: "month",
-    label: "Tháng này",
+    label: "This month",
   },
   {
     value: "all",
-    label: "Tất cả",
+    label: "All time",
   },
 ];
 

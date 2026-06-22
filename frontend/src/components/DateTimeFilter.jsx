@@ -4,7 +4,7 @@ import { options } from "@/lib/data";
 const DateTimeFilter = ({ dateQuery, setDateQuery }) => {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-muted-foreground font-medium">Hiển thị:</span>
+      <span className="text-sm text-muted-foreground font-medium whitespace-nowrap">Show:</span>
       <select
         value={dateQuery}
         onChange={(e) => setDateQuery(e.target.value)}

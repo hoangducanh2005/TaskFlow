@@ -7,7 +7,6 @@ function App() {
   return (
     <>
       <Toaster richColors position='bottom-right' /> 
-      <button onClick={() => toast('Hello, world!')}>  Toaster</button>
 
       <BrowserRouter>
         <Routes>

@@ -8,14 +8,14 @@ const Footer = ({ completedTasksCount = 0, activeTasksCount = 0 }) => {
           <p className="text-sm text-muted-foreground">
             {completedTasksCount > 0 && (
               <>
-                🎉 Tuyệt vời! Bạn đã hoàn thành {completedTasksCount} việc
+                🎉 Awesome! You have completed {completedTasksCount} tasks
                 {activeTasksCount > 0 &&
-                  `, còn ${activeTasksCount} việc nữa thôi. Cố lên!`}
+                  `, just ${activeTasksCount} more to go. Keep it up!`}
               </>
             )}
 
             {completedTasksCount === 0 && activeTasksCount > 0 && (
-              <>Hãy bắt đầu làm {activeTasksCount} nhiệm vụ nào!</>
+              <>Let's start your {activeTasksCount} tasks!</>
             )}
           </p>
         </div>
