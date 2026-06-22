@@ -59,7 +59,7 @@ export const updateTask = async (req, res) => {
         const updatedTask = await Task.findByIdAndUpdate(
             req.params.id,
             { title, status, completedAt },
-            { new: true } // Return the updated document
+            { returnDocument: 'after' } // Trả về document sau khi update
         );
 
         if (!updatedTask) {
