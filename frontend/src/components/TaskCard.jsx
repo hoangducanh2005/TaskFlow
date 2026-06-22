@@ -69,7 +69,7 @@ const TaskCard = ({ task, index, handleTaskChanged }) => {
   return (
     <Card
       className={cn(
-        "p-4 bg-gradient-card border-0 shadow-custom-md hover:shadow-custom-lg transition-all duration-200 animate-fade-in group",
+        "p-4 rounded-2xl bg-gradient-card border-0 shadow-custom-md hover:shadow-custom-lg transition-all duration-200 animate-fade-in group",
         task.status === "complete" && "opacity-75"
       )}
       style={{ animationDelay: `${index * 50}ms` }}
@@ -123,18 +123,22 @@ const TaskCard = ({ task, index, handleTaskChanged }) => {
           )}
 
           {/* creation date & completion date */}
-          <div className="flex items-center gap-2 mt-1">
-            <Calendar className="size-3 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">
-              {new Date(task.createdAt).toLocaleString()}
-            </span>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+              <Calendar className="size-3.5" />
+              <span className="text-xs font-medium">
+                {new Date(task.createdAt).toLocaleString()}
+              </span>
+            </div>
             {task.completedAt && (
               <>
-                <span className="text-xs text-muted-foreground"> - </span>
-                <Calendar className="size-3 text-muted-foreground" />
-                <span className="text-xs text-muted-foreground">
-                  {new Date(task.completedAt).toLocaleString()}
-                </span>
+                <span className="text-xs text-muted-foreground/50"> • </span>
+                <div className="flex items-center gap-1.5 bg-success/15 text-success px-2 py-0.5 rounded-full border border-success/20">
+                  <CheckCircle2 className="size-3.5" />
+                  <span className="text-xs font-semibold">
+                    {new Date(task.completedAt).toLocaleString()}
+                  </span>
+                </div>
               </>
             )}
           </div>

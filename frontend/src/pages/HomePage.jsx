@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import api from "@/lib/axios";
 import { visibleTaskLimit } from "@/lib/data";
+import { Loader2 } from "lucide-react";
 
 const HomePage = () => {
   const [taskBuffer, setTaskBuffer] = useState([]);
@@ -17,6 +18,7 @@ const HomePage = () => {
   const [filter, setFilter] = useState("all");
   const [dateQuery, setDateQuery] = useState("today");
   const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchTasks();
@@ -29,6 +31,7 @@ const HomePage = () => {
   // logic
   const fetchTasks = async () => {
     try {
+      setIsLoading(true);
       const res = await api.get(`/tasks?filter=${dateQuery}`);
       setTaskBuffer(res.data.tasks);
       setActiveTaskCount(res.data.activeCount);
@@ -36,6 +39,8 @@ const HomePage = () => {
     } catch (error) {
       console.error("Lỗi xảy ra khi truy xuất tasks:", error);
       toast.error("Lỗi xảy ra khi truy xuất tasks.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -111,11 +116,17 @@ const HomePage = () => {
           />
 
           {/* Danh Sách Nhiệm Vụ */}
-          <TaskList
-            filteredTasks={visibleTasks}
-            filter={filter}
-            handleTaskChanged={handleTaskChanged}
-          />
+          {isLoading ? (
+            <div className="flex justify-center p-8">
+              <Loader2 className="size-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <TaskList
+              filteredTasks={visibleTasks}
+              filter={filter}
+              handleTaskChanged={handleTaskChanged}
+            />
+          )}
 
           {/* Phân Trang và Lọc Theo Date */}
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">

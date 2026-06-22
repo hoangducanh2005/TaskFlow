@@ -4,8 +4,35 @@ import Task from '../models/Tasks.js';
 
 export const getAllTasks = async (req, res) => {
     try {
-        const tasks = await Task.find().sort({ createdAt: -1 });    // lay tat ca data tu database // -1 = descending order, 1 = ascending order
-        res.status(200).json(tasks);    //tra data duoiu dang json ve client
+        const { filter } = req.query;
+        let query = {};
+        
+        if (filter) {
+            const now = new Date();
+            if (filter === 'today') {
+                const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                query.createdAt = { $gte: startOfToday };
+            } else if (filter === 'week') {
+                const startOfWeek = new Date(now);
+                startOfWeek.setDate(now.getDate() - now.getDay());
+                startOfWeek.setHours(0, 0, 0, 0);
+                query.createdAt = { $gte: startOfWeek };
+            } else if (filter === 'month') {
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                query.createdAt = { $gte: startOfMonth };
+            }
+        }
+
+        const tasks = await Task.find(query).sort({ createdAt: -1 });    // lay tat ca data tu database // -1 = descending order, 1 = ascending order
+        
+        const activeCount = tasks.filter(task => task.status === 'active').length;
+        const completeCount = tasks.filter(task => task.status === 'completed').length;
+
+        res.status(200).json({
+            tasks,
+            activeCount,
+            completeCount
+        });
 
     } catch (error) {
         console.error('Error when calling getAllTasks:', error);
